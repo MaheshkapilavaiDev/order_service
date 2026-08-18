@@ -6,6 +6,7 @@ import com.orderservice.client.UserServiceClient;
 import com.orderservice.dto.OrderResponse;
 import com.orderservice.dto.UserResponse;
 import com.orderservice.entity.Order;
+import com.orderservice.exception.OrderNotFoundException;
 
 import java.util.Map;
 
@@ -41,7 +42,7 @@ public class OrderService {
         Order order = orders.get(orderId);
 
         if (order == null) {
-            throw new RuntimeException(
+            throw new OrderNotFoundException(
                     "Order not found with id: " + orderId
             );
         }
