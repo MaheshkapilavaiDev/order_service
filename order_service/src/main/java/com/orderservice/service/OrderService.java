@@ -2,6 +2,7 @@ package com.orderservice.service;
 
 import org.springframework.stereotype.Service;
 
+import com.orderservice.client.PaymentServiceClient;
 import com.orderservice.client.UserServiceClient;
 import com.orderservice.dto.OrderResponse;
 import com.orderservice.dto.UserResponse;
@@ -14,6 +15,7 @@ import java.util.Map;
 public class OrderService {
 
     private final UserServiceClient userServiceClient;
+    private final PaymentServiceClient paymentServiceClient;
 
     private final Map<Long, Order> orders = Map.of(
             1001L,
@@ -33,8 +35,10 @@ public class OrderService {
             )
     );
 
-    public OrderService(UserServiceClient userServiceClient) {
+    public OrderService(UserServiceClient userServiceClient,
+    		 PaymentServiceClient paymentServiceClient) {
         this.userServiceClient = userServiceClient;
+        this.paymentServiceClient = paymentServiceClient;
     }
 
     public OrderResponse getOrderById(Long orderId) {
@@ -49,6 +53,9 @@ public class OrderService {
 
         UserResponse user =
                 userServiceClient.getUserById(order.getUserId());
+        
+        String paymentResponse =
+                paymentServiceClient.processPayment(orderId);
 
         return new OrderResponse(
                 order.getOrderId(),
